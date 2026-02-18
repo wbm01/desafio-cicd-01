@@ -25,7 +25,7 @@ jobs:
   testes:
     needs: [build]
     uses: wbm01/desafio-cicd-01/.github/workflows/testes.yml@main
-    
+
   release:
     needs: [testes]
     name: Criação de Release
@@ -43,7 +43,6 @@ jobs:
         with:
           context: ./src
           file: ./src/Review-Filmes.Web/Dockerfile
-          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             willianmarioti/review-filmes:latest
