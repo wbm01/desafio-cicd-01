@@ -10,10 +10,12 @@ jobs:
         steps:
             - name: Obtendo o código do projeto
               uses: actions/checkout@v4
+
             - name: Setup dotnet
               uses: actions/setup-dotnet@v4
               with:
                 dotnet-version: "8.0.300"
+
             - name: Execução do Teste de Unidade
               working-directory: ./src
               run: dotnet test ./Review-Filmes.Test.Unit/Review-Filmes.Test.Unit.csproj
@@ -33,10 +35,12 @@ jobs:
         steps:
             - name: Obtendo o código do projeto
               uses: actions/checkout@v4
+
             - name: Setup dotnet
               uses: actions/setup-dotnet@v4
               with:
                 dotnet-version: "8.0.300"
+
             - name: Execução do Teste de Integração
               working-directory: ./src
               run: dotnet test ./Review-Filmes.Test.Integration/Review-Filmes.Test.Integration.csproj
@@ -49,30 +53,39 @@ jobs:
       steps:
         - name: Obtendo o código do projeto
           uses: actions/checkout@v4
+
         - name: Setup JDK
           uses: actions/setup-java@v4
           with:
             distribution: 'temurin'
             java-version: '21'
+
         - name: Setup dotnet
           uses: actions/setup-dotnet@v4
           with:
             dotnet-version: "8.0.300"
+
         - name: Instalação do Sonarqube Scanner
           run: dotnet tool install --global dotnet-sonarscanner
+
         - name: Build e Análise
           working-directory: ./src
           run: |
             dotnet sonarscanner begin \
               /o:"wbm01" \
               /k:"wbm01_filme" \
-              /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625" \
+              /d:sonar.token="${{secrets.SONAR_TOKEN}}" \
               /d:sonar.branch.name="${{ github.ref_name }}" \
               /d:sonar.scanner.skipJreProvisioning=true
 
             dotnet build Review-Filmes.sln --no-incremental
 
             dotnet sonarscanner end \
-              /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
+              /d:sonar.token="${{secrets.SONAR_TOKEN}}"
 
-          
+        - name: Verificação do Quality Gate
+          uses: sonarsource/sonarqube-quality-gate-action@master
+          env:
+            SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+          with:
+            scanMetadataReportFile: ./src/.sonarqube/.sonar/report-task.txt
