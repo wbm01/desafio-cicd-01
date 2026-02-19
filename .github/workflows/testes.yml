@@ -67,6 +67,7 @@ jobs:
               /o:"wbm01" \
               /k:"wbm01_filme" \
               /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
+              /d:sonar.branch.name="${{ github.ref_name }}"
             dotnet build Review-Filmes.sln
             dotnet sonarscanner end /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
           
