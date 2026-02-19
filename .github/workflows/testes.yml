@@ -60,14 +60,19 @@ jobs:
             dotnet-version: "8.0.300"
         - name: Instalação do Sonarqube Scanner
           run: dotnet tool install --global dotnet-sonarscanner
-        - name: Build e Analise
+        - name: Build e Análise
           working-directory: ./src
           run: |
             dotnet sonarscanner begin \
               /o:"wbm01" \
               /k:"wbm01_filme" \
-              /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
-              /d:sonar.branch.name="${{ github.ref_name }}"
-            dotnet build Review-Filmes.sln
-            dotnet sonarscanner end /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
+              /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+              /d:sonar.branch.name="${{ github.ref_name }}" \
+              /d:sonar.scanner.skipJreProvisioning=true
+
+            dotnet build Review-Filmes.sln --no-incremental
+
+            dotnet sonarscanner end \
+              /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
           
