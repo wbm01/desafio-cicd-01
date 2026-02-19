@@ -27,6 +27,7 @@ jobs:
   testes:
     needs: [build]
     uses: wbm01/desafio-cicd-01/.github/workflows/testes.yml@main
+    secrets: inherit
 
   release:
     needs: [testes]
@@ -41,7 +42,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
+
       - name: Build e Push da Imagem Docker
         uses: docker/build-push-action@v6
         with:
