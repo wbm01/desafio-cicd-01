@@ -66,13 +66,13 @@ jobs:
             dotnet sonarscanner begin \
               /o:"wbm01" \
               /k:"wbm01_filme" \
-              /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+              /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625" \
               /d:sonar.branch.name="${{ github.ref_name }}" \
               /d:sonar.scanner.skipJreProvisioning=true
 
             dotnet build Review-Filmes.sln --no-incremental
 
             dotnet sonarscanner end \
-              /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+              /d:sonar.token="4325f7829d528a503e82a929617c4acba9300625"
 
           
