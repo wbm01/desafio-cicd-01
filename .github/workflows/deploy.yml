@@ -13,12 +13,19 @@ on:
             environment:
                 type: string
                 required: true
-                description: "Nome do ambiente que será utilizado"        
+                description: "Nome do ambiente que será utilizado"    
+            environment-url:
+                type: string
+                required: true
+                description: "Url da aplicação"    
 
 jobs:
     deploy: 
         name: "Deploy"
         runs-on: ubuntu-latest
+        environment:
+            name: ${{inputs.environment}}
+            url: ${{inputs.environment-url}}
         steps:
             - name: Obtendo o código do projeto
               uses: actions/checkout@v4
@@ -28,6 +35,9 @@ jobs:
               with:
                 method: kubeconfig
                 kubeconfig: ${{ secrets.K8S_CONFIG }}
+
+            - name: Update Deployment
+              run: "sed -i 's/host: homologacao.willian.com/host: ${{vars.BASE_URL}}/g' k8s/deployment.yaml"
 
             - name: Deploy no Kubernetes
               uses: Azure/k8s-deploy@v5

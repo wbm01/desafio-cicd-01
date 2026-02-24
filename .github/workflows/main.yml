@@ -72,7 +72,23 @@ jobs:
         with: 
           category: docker-result
           sarif_file: trivy-docker-result.sarif
-  homolog:
+
+  homologacao:
     needs: [release]
     uses: wbm01/desafio-cicd-01/.github/workflows/deploy.yml@main
+    with:
+      manifests: k8s/deployment.yaml
+      images: willianmarioti/review-filmes:v${{ github.run_number }}
+      environment: homologacao
+      environment-url: http://homologacao.willian.com
+    secrets: inherit
+
+  producao:
+    needs: [homologacao]
+    uses: wbm01/desafio-cicd-01/.github/workflows/deploy.yml@main
+    with:
+      manifests: k8s/deployment.yaml
+      images: willianmarioti/review-filmes:v${{ github.run_number }}
+      environment: producao
+      environment-url: http://producao.willian.com
     secrets: inherit
